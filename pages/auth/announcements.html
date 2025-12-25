@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements | Asprasys Dash</title>
+    <style>
+        :root {
+            /* Inherited Color Palette */
+            --bg-main: #0f172a;
+            --bg-accent: #1e293b;
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.15);
+            --secondary: #64748b;
+            --accent: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+
+        
+            /* Surface & Borders */
+            --surface: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+
+            /* Text */
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            /* Dimensions */
+            --sidebar-width: 260px;
+            --navbar-height: 70px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+
+            /* Effects */
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Reset & Base */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(129, 140, 248, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Layout Structure */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-accent);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary-glow);
+            color: var(--primary);
+            box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            height: var(--navbar-height);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--bg-main);
+            border-color: var(--primary);
+        }
+
+        /* Announcements List */
+        .announcements-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .announcement-card {
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .announcement-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
+        }
+
+        .announcement-card.unread {
+            border-left: 4px solid var(--primary);
+        }
+
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .announcement-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .tag-general {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--text-secondary);
+        }
+
+        .tag-important {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .tag-update {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--primary);
+        }
+
+        .tag-event {
+            background: rgba(129, 140, 248, 0.2);
+            color: var(--accent);
+        }
+
+        .date-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .announcement-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .announcement-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .announcement-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            margin-top: 0;
+            padding-top: 0;
+            border-top: 0px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .announcement-card.expanded .announcement-details {
+            max-height: 500px;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-text">Asprasys Dash</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                    <li class="nav-item"><a href="daily-goals.html" class="nav-link">Daily Goals</a></li>
+                    <li class="nav-item"><a href="achievements.html" class="nav-link">Achievements</a></li>
+                    <li class="nav-item"><a href="announcements.html" class="nav-link active">Announcements</a></li>
+                    <li class="nav-item"><a href="my-timesheets.html" class="nav-link">Timesheets</a></li>
+                    <li class="nav-item"><a href="my-courses.html" class="nav-link">My Courses</a></li>
+                    <li class="nav-item"><a href="my-projects.html" class="nav-link">My Projects</a></li>
+                    <li class="nav-item"><a href="my-interviews.html" class="nav-link">My Interviews</a></li>
+                    <li class="nav-item"><a href="my-profile.html" class="nav-link">My Profile</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="navbar">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button id="menu-toggle"
+                        style="background:none; border:none; color:white; cursor:pointer; font-size:1.5rem;">☰</button>
+                    <h2 id="page-title">Announcements</h2>
+                </div>
+                <div class="user-profile">
+                    <span class="user-name">Alex Johnson</span>
+                    <div class="user-avatar">AJ</div>
+                </div>
+            </header>
+
+            <main class="content-area">
+                <section class="page-header">
+                    <h1>Company News & Updates</h1>
+                    <p>Stay informed about the latest happenings across Asprasys.</p>
+                </section>
+
+                <div class="stats-grid">
+                    <div class="card">
+                        <span class="stat-label">Total</span>
+                        <span class="stat-value" id="total-count">0</span>
+                    </div>
+                    <div class="card">
+                        <span class="stat-label">New</span>
+                        <span class="stat-value" id="new-count" style="color: var(--primary);">0</span>
+                    </div>
+                    <div class="card" style="border-color: var(--danger);">
+                        <span class="stat-label">Important</span>
+                        <span class="stat-value" id="important-count" style="color: var(--danger);">0</span>
+                    </div>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-btn active" data-category="All">All Feed</button>
+                    <button class="filter-btn" data-category="General">General</button>
+                    <button class="filter-btn" data-category="Update">Product Updates</button>
+                    <button class="filter-btn" data-category="Important">Urgent</button>
+                    <button class="filter-btn" data-category="Event">Events</button>
+                </div>
+
+                <div class="announcements-list" id="announcements-container">
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>&copy; 2025 Asprasys Dash Enterprise. Communication Portal.</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Announcement Data
+        const announcements = [
+            {
+                id: 1,
+                title: "Q1 Strategic Goals Reveal",
+                excerpt: "The executive team will be sharing the roadmap for the upcoming quarter.",
+                content: "We are excited to invite all employees to the Q1 Town Hall. We will discuss our performance in the previous quarter and outline our key strategic pillars for the next three months. Focus areas include international expansion and the launch of our new AI-driven analytics module.",
+                category: "General",
+                date: "Oct 25, 2025",
+                time: "10:00 AM",
+                isRead: false,
+                isImportant: false
+            },
+            {
+                id: 2,
+                title: "Emergency Server Maintenance",
+                excerpt: "Scheduled downtime for the production database this weekend.",
+                content: "Please note that the main production servers will be down for maintenance this Saturday from 12:00 AM to 04:00 AM UTC. This is a critical update to patch security vulnerabilities and improve query performance. Please ensure all active work is saved prior to the window.",
+                category: "Important",
+                date: "Oct 24, 2025",
+                time: "03:45 PM",
+                isRead: true,
+                isImportant: true
+            },
+            {
+                id: 3,
+                title: "Version 4.2 Release Notes",
+                excerpt: "The latest dashboard update introduces theme customisation and faster load times.",
+                content: "Asprasys Dash 4.2 is now live! Key features include: Custom CSS variable injection for client dashboards, 40% reduction in initial bundle size, and new integration support for ASP.NET Core Web API. Check the documentation for breaking changes.",
+                category: "Update",
+                date: "Oct 22, 2025",
+                time: "09:00 AM",
+                isRead: false,
+                isImportant: false
+            },
+            {
+                id: 4,
+                title: "Annual Hackathon 2025",
+                excerpt: "Registrations are now open for the Asprasys Build-Off.",
+                content: "Get your teams ready! The annual hackathon is happening next month. This year's theme is 'Sustainable Tech'. Grand prizes include a trip to the Global Tech Summit and dedicated R&D funding for the winning project.",
+                category: "Event",
+                date: "Oct 20, 2025",
+                time: "11:30 AM",
+                isRead: true,
+                isImportant: false
+            }
+        ];
+
+        // UI Selectors
+        const container = document.getElementById('announcements-container');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+
+        // Mobile Toggle
+        menuToggle.addEventListener('click', () => sidebar.classList.toggle('active'));
+
+        // Render Function
+        function renderAnnouncements(categoryFilter = "All") {
+            container.innerHTML = '';
+
+            const filtered = categoryFilter === "All"
+                ? announcements
+                : announcements.filter(a => a.category === categoryFilter);
+
+            filtered.forEach(ann => {
+                const card = document.createElement('div');
+                card.className = `card announcement-card ${ann.isRead ? '' : 'unread'}`;
+                card.setAttribute('data-id', ann.id);
+
+                card.innerHTML = `
+                <div class="announcement-header">
+                    <div class="announcement-meta">
+                        <span class="tag tag-${ann.category.toLowerCase()}">${ann.category}</span>
+                        <span class="date-time">${ann.date} • ${ann.time}</span>
+                    </div>
+                    ${ann.isRead ? '' : '<span class="status-dot"></span>'}
+                </div>
+                <div class="announcement-title">
+                    ${ann.isImportant ? '⚠️ ' : ''}${ann.title}
+                </div>
+                <div class="announcement-excerpt">
+                    ${ann.excerpt}
+                </div>
+                <div class="announcement-details">
+                    ${ann.content}
+                </div>
+            `;
+
+                card.addEventListener('click', () => {
+                    card.classList.toggle('expanded');
+                    if (!ann.isRead) {
+                        ann.isRead = true;
+                        updateStats();
+                        renderAnnouncements(categoryFilter);
+                    }
+                });
+
+                container.appendChild(card);
+            });
+            updateStats();
+        }
+
+        // Stats Update
+        function updateStats() {
+            document.getElementById('total-count').innerText = announcements.length;
+            document.getElementById('new-count').innerText = announcements.filter(a => !a.isRead).length;
+            document.getElementById('important-count').innerText = announcements.filter(a => a.category === 'Important').length;
+        }
+
+        // Filter Logic
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderAnnouncements(btn.getAttribute('data-category'));
+            });
+        });
+
+        // Init
+        window.onload = () => renderAnnouncements();
+    </script>
+
+    
+
+</body>
+
+</html>

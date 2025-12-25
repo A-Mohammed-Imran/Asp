@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Asprasys Dash</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-accent: #1e293b;
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.15);
+            --secondary: #64748b;
+            --accent: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --surface: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --sidebar-width: 260px;
+            --navbar-height: 70px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+         *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-main);
+            background-image: radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(129, 140, 248, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-accent);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary-glow);
+            color: var(--primary);
+            box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.2);
+        }
+
+        .main-wrapper {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            height: var(--navbar-height);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .content-area {
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .user-info-card {
+            text-align: center;
+        }
+
+        .profile-pic-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--bg-accent);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .upload-hint {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--primary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid var(--bg-main);
+        }
+
+        .info-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.8rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .btn-save {
+            background: var(--primary);
+            color: var(--bg-main);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            float: right;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+        }
+
+        .activity-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .stat-num {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-name {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header"><span class="logo-text">Asprasys Dash</span></div>
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                    <li class="nav-item"><a href="daily-goals.html" class="nav-link">Daily Goals</a></li>
+                    <li class="nav-item"><a href="achievements.html" class="nav-link">Achievements</a></li>
+                    <li class="nav-item"><a href="announcements.html" class="nav-link">Announcements</a></li>
+                    <li class="nav-item"><a href="my-timesheets.html" class="nav-link">Timesheets</a></li>
+                    <li class="nav-item"><a href="my-courses.html" class="nav-link">My Courses</a></li>
+                    <li class="nav-item"><a href="my-projects.html" class="nav-link">My Projects</a></li>
+                    <li class="nav-item"><a href="my-interviews.html" class="nav-link">My Interviews</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link active">My Profile</a></li>
+                    <li class="nav-item logout-link"><a href="#" class="nav-link">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+    
+        <div class="main-wrapper">
+            <header class="navbar">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="menu-toggle" id="toggleMenu">☰</button>
+                    <h2 id="page-title">My Profile</h2>
+                </div>
+                <div class="user-profile">
+                    <span class="user-name" id="nav-user-name">Alex Johnson</span>
+                </div>
+            </header>
+
+            <main class="content-area">
+                <section class="page-header">
+                    <h1>Account Settings</h1>
+                    <p>Manage your public profile and personal information.</p>
+                </section>
+
+                <div class="profile-grid">
+                    <div class="user-info-card card">
+                        <div class="profile-pic-container">
+                            <img src="[https://i.pravatar.cc/150?u=alex](https://i.pravatar.cc/150?u=alex)"
+                                alt="Profile" class="profile-pic" id="avatarPreview">
+                            <label for="picUpload" class="upload-hint">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <path
+                                        d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                                    </path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                            </label>
+                            <input type="file" id="picUpload" hidden accept="image/*">
+                        </div>
+                        <h2 id="display-name" style="margin-bottom: 0.5rem;">Alex Johnson</h2>
+                        <span id="display-role"
+                            style="color: var(--primary); font-size: 0.9rem; font-weight: 600;">Senior UI
+                            Developer</span>
+
+                        <div style="margin-top: 2rem; text-align: left;">
+                            <div class="info-group">
+                                <span class="info-label">Department</span>
+                                <span class="info-value">Frontend Engineering</span>
+                            </div>
+                            <div class="info-group">
+                                <span class="info-label">Organization</span>
+                                <span class="info-value">Asprasys Technologies</span>
+                            </div>
+                        </div>
+
+                        <div class="activity-stats">
+                            <div class="stat-card">
+                                <span class="stat-num">12</span>
+                                <span class="stat-name">Projects</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-num">84</span>
+                                <span class="stat-name">Tasks</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-num">5</span>
+                                <span class="stat-name">Awards</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3
+                            style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+                            Edit Profile</h3>
+                        <form id="profileForm">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" class="form-control" id="form-name" value="Alex Johnson">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" class="form-control" id="form-email"
+                                        value="alex.j@asprasys.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="text" class="form-control" id="form-phone" value="+1 (555) 000-1234">
+                                </div>
+                                <div class="form-group">
+                                    <label>Job Role</label>
+                                    <input type="text" class="form-control" id="form-role" value="Senior UI Developer">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>New Password</label>
+                                    <input type="password" class="form-control"
+                                        placeholder="Leave blank to keep current">
+                                </div>
+                            </div>
+                            <div style="margin-top: 2rem; overflow: hidden;">
+                                <button type="submit" class="btn-save">Update Profile</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>&copy; 2025 Asprasys Dash. All rights reserved.</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const userData = {
+            name: "Alex Johnson",
+            email: "alex.j@asprasys.com",
+            phone: "+1 (555) 000-1234",
+            role: "Senior UI Developer",
+            avatar: "[https://i.pravatar.cc/150?u=alex](https://i.pravatar.cc/150?u=alex)"
+        };
+
+        function initProfile() {
+            document.getElementById('display-name').innerText = userData.name;
+            document.getElementById('display-role').innerText = userData.role;
+            document.getElementById('nav-user-name').innerText = userData.name;
+            document.getElementById('form-name').value = userData.name;
+            document.getElementById('form-email').value = userData.email;
+            document.getElementById('form-phone').value = userData.phone;
+            document.getElementById('form-role').value = userData.role;
+            document.getElementById('avatarPreview').src = userData.avatar;
+        }
+
+        document.getElementById('toggleMenu').addEventListener('click', () => {
+            document.getElementById('sidebar').style.transform =
+                document.getElementById('sidebar').style.transform === 'translateX(0%)' ? 'translateX(-100%)' : 'translateX(0%)';
+        });
+
+        document.getElementById('picUpload').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('profileForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const saveBtn = e.target.querySelector('.btn-save');
+            saveBtn.innerText = "Saving...";
+            saveBtn.style.opacity = "0.7";
+
+            setTimeout(() => {
+                userData.name = document.getElementById('form-name').value;
+                userData.role = document.getElementById('form-role').value;
+                userData.email = document.getElementById('form-email').value;
+                userData.phone = document.getElementById('form-phone').value;
+                userData.avatar = document.getElementById('avatarPreview').src;
+
+                initProfile();
+
+                saveBtn.innerText = "Update Profile";
+                saveBtn.style.opacity = "1";
+                alert("Profile updated successfully!");
+            }, 1000);
+        });
+
+        window.onload = initProfile;
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Projects | Asprasys Dash</title>
+    <style>
+        :root {
+            /* Inherited Color Palette */
+            --bg-main: #0f172a;
+            --bg-accent: #1e293b;
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.15);
+            --secondary: #64748b;
+            --accent: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+
+
+            /* Surface & Borders */
+            --surface: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+
+            /* Text */
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            /* Dimensions */
+            --sidebar-width: 260px;
+            --navbar-height: 70px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+
+            /* Effects */
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Reset & Base */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(129, 140, 248, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Layout Structure */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-accent);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary-glow);
+            color: var(--primary);
+            box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            height: var(--navbar-height);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 2rem;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--bg-main);
+        }
+
+        /* Project Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .status-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .status-ongoing {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--primary);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            height: 3rem;
+            overflow: hidden;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-top: auto;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar-bg {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 3px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border-color: var(--border);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--bg-main);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-muted);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-text">Asprasys Dash</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                    <li class="nav-item"><a href="daily-goals.html" class="nav-link">Daily Goals</a></li>
+                    <li class="nav-item"><a href="achievements.html" class="nav-link">Achievements</a></li>
+                    <li class="nav-item"><a href="announcements.html" class="nav-link">Announcements</a></li>
+                    <li class="nav-item"><a href="my-timesheets.html" class="nav-link">Timesheets</a></li>
+                    <li class="nav-item"><a href="my-courses.html" class="nav-link">My Courses</a></li>
+                    <li class="nav-item"><a href="my-projects.html" class="nav-link active">My Projects</a></li>
+                    <li class="nav-item"><a href="my-interviews.html" class="nav-link">My Interviews</a></li>
+                    <li class="nav-item"><a href="my-profile.html" class="nav-link">My Profile</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="navbar">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>My Projects</h2>
+                </div>
+                <div class="user-profile">
+                    <span class="user-name">Alex Johnson</span>
+                    <div class="user-avatar"
+                        style="width: 35px; height: 35px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;">
+                        AJ</div>
+                </div>
+            </header>
+
+            <main class="content-area">
+                <section class="page-header">
+                    <h1>Project Portfolio</h1>
+                    <p>Track your active contributions and completed technical milestones.</p>
+                </section>
+
+                <div class="stats-grid">
+                    <div class="card">
+                        <span class="stat-label">Total Projects</span>
+                        <span class="stat-value" id="stat-total">0</span>
+                    </div>
+                    <div class="card">
+                        <span class="stat-label">Completed</span>
+                        <span class="stat-value" id="stat-completed" style="color: var(--success);">0</span>
+                    </div>
+                    <div class="card">
+                        <span class="stat-label">Ongoing</span>
+                        <span class="stat-value" id="stat-ongoing" style="color: var(--primary);">0</span>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <button class="filter-btn active" onclick="filterProjects('All', this)">All Projects</button>
+                    <button class="filter-btn" onclick="filterProjects('Ongoing', this)">Ongoing</button>
+                    <button class="filter-btn" onclick="filterProjects('Completed', this)">Completed</button>
+                    <button class="filter-btn" onclick="filterProjects('Pending', this)">Pending</button>
+                </div>
+
+                <div class="projects-grid" id="projects-container">
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>&copy; 2025 Asprasys Dash. Enterprise Project Management Module.</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const projectsData = [
+            { title: 'Nexus UI Redesign', desc: 'Modernizing the legacy dashboard interface with a focus on dark mode and accessibility.', tech: ['Figma', 'CSS3', 'HTML5'], progress: 75, status: 'Ongoing' },
+            { title: 'CloudSync API', desc: 'Development of a robust RESTful API for seamless cloud-based data synchronization.', tech: ['Node.js', 'Express', 'Redis'], progress: 100, status: 'Completed' },
+            { title: 'E-Commerce Platform', desc: 'Building a high-performance scalable shopping platform with integrated payment gateways.', tech: ['React', 'ASP.NET', 'SQL Server'], progress: 20, status: 'Ongoing' },
+            { title: 'Automated Testing Suite', desc: 'Implementing a comprehensive E2E testing framework for the core product line.', tech: ['Playwright', 'Jest', 'CI/CD'], progress: 0, status: 'Pending' },
+            { title: 'Analytics Dashboard', desc: 'Real-time data visualization module for business intelligence reporting.', tech: ['D3.js', 'Python', 'Flask'], progress: 100, status: 'Completed' },
+            { title: 'Mobile App Migration', desc: 'Transitioning the primary consumer application to a cross-platform mobile framework.', tech: ['Flutter', 'Firebase'], progress: 55, status: 'Ongoing' }
+        ];
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function filterProjects(status, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProjects(status);
+        }
+
+        function renderProjects(filter = 'All') {
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '';
+
+            const filtered = filter === 'All' ? projectsData : projectsData.filter(p => p.status === filter);
+
+            filtered.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'card project-card';
+                card.innerHTML = `
+                <div class="project-header">
+                    <span class="status-badge status-${project.status.toLowerCase()}">${project.status}</span>
+                    <div class="tech-stack">
+                        ${project.tech.map(t => `<span class="tech-tag">${t}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3 class="project-title">${project.title}</h3>
+                    <p class="project-desc">${project.desc}</p>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span>Progress</span>
+                        <span>${project.progress}%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${project.progress}%"></div>
+                    </div>
+                </div>
+                <div class="project-actions">
+                    <a href="#" class="btn btn-outline">View Details</a>
+                    <a href="#" class="btn btn-primary">Update</a>
+                </div>
+            `;
+                container.appendChild(card);
+            });
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').innerText = projectsData.length;
+            document.getElementById('stat-completed').innerText = projectsData.filter(p => p.status === 'Completed').length;
+            document.getElementById('stat-ongoing').innerText = projectsData.filter(p => p.status === 'Ongoing').length;
+        }
+
+        // Initialize on load
+        window.onload = () => renderProjects();
+    </script>
+
+
+
+</body>
+
+</html>
