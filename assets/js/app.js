@@ -6,6 +6,76 @@ function toggleSidebar() {
   if (el) el.classList.toggle("active");
 }
 
+// Handle window resize for responsive behavior
+function handleResponsive() {
+  const sidebar = document.getElementById("sidebar");
+  if (window.innerWidth > 1024) {
+    if (sidebar) sidebar.classList.remove("active");
+    const backdrop = document.querySelector(".sidebar-backdrop");
+    if (backdrop) backdrop.classList.remove("active");
+  }
+}
+
+window.addEventListener("resize", handleResponsive);
+
+// Add menu toggle button to navbar on mobile
+document.addEventListener("DOMContentLoaded", () => {
+  const navbar = document.querySelector(".navbar");
+  const sidebar = document.getElementById("sidebar");
+  const appContainer = document.querySelector(".app-container");
+  
+  if (navbar && sidebar && !document.querySelector(".menu-toggle")) {
+    const menuBtn = document.createElement("button");
+    menuBtn.className = "menu-toggle";
+    menuBtn.innerHTML = "☰";
+    menuBtn.setAttribute("aria-label", "Toggle menu");
+    menuBtn.addEventListener("click", toggleSidebar);
+    navbar.insertBefore(menuBtn, navbar.firstChild);
+  }
+  
+  // Add backdrop overlay for mobile
+  if (sidebar && !document.querySelector(".sidebar-backdrop")) {
+    const backdrop = document.createElement("div");
+    backdrop.className = "sidebar-backdrop";
+    if (appContainer) {
+      appContainer.appendChild(backdrop);
+    }
+    
+    backdrop.addEventListener("click", () => {
+      sidebar.classList.remove("active");
+      backdrop.classList.remove("active");
+    });
+  }
+  
+  // Close sidebar when clicking on a nav link
+  const navLinks = document.querySelectorAll(".nav-link");
+  navLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      if (sidebar && window.innerWidth <= 1024) {
+        sidebar.classList.remove("active");
+        const backdrop = document.querySelector(".sidebar-backdrop");
+        if (backdrop) backdrop.classList.remove("active");
+      }
+    });
+  });
+  
+  // Toggle backdrop when sidebar is toggled
+  const observer = new MutationObserver(() => {
+    const backdrop = document.querySelector(".sidebar-backdrop");
+    if (sidebar && backdrop) {
+      if (sidebar.classList.contains("active")) {
+        backdrop.classList.add("active");
+      } else {
+        backdrop.classList.remove("active");
+      }
+    }
+  });
+  
+  if (sidebar) {
+    observer.observe(sidebar, { attributes: true, attributeFilter: ["class"] });
+  }
+});
+
 function initLoginPage() {
   const loginForm = document.getElementById("login-form");
   if (!loginForm) return; // Not on login page
