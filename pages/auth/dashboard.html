@@ -29,7 +29,7 @@
                     <li class="nav-item"><a href="my-profile.html" class="nav-link">My Profile</a></li>
 
                     <li class="nav-item logout-link">
-                        <a href="#" class="nav-link" onclick="handleLogout(event)">Logout</a>
+                        <a href="logout.html" class="nav-link">logout</a>
                     </li>
                 </ul>
             </nav>
@@ -153,13 +153,6 @@
                     }
                 });
             });
-        }
-
-        function handleLogout(e) {
-            e.preventDefault();
-            console.log('Authentication Token Invalidated...');
-            alert('Logging out of Nexus Dash...');
-            window.location.href = 'index.html';
         }
 
         // Run on load

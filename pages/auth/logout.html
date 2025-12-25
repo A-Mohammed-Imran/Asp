@@ -12,6 +12,7 @@
 
 <body>
 
+
     <div class="app-container">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -19,7 +20,7 @@
             </div>
             <nav class="sidebar-nav">
                 <ul class="nav-list">
-                    <li class="nav-item"><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+                    <li class="nav-item"><a href="dashboard.html" class="nav-link">Dashboard</a></li>
                     <li class="nav-item"><a href="daily-goals.html" class="nav-link">Daily Goals</a></li>
                     <li class="nav-item"><a href="achievements.html" class="nav-link">Achievements</a></li>
                     <li class="nav-item"><a href="announcements.html" class="nav-link">Announcements</a></li>
@@ -28,10 +29,7 @@
                     <li class="nav-item"><a href="my-projects.html" class="nav-link">My Projects</a></li>
                     <li class="nav-item"><a href="my-interviews.html" class="nav-link">My Interviews</a></li>
                     <li class="nav-item"><a href="my-profile.html" class="nav-link">My Profile</a></li>
-                    
-                    <li class="nav-item logout-link">
-                        <a href="#" class="nav-link" onclick="handleLogout(event)">Logout</a>
-                    </li>
+                    <li class="nav-item"><a href="#" class="nav-link" style="color: var(--primary);">Logout</a></li>
                 </ul>
             </nav>
         </aside>
@@ -53,7 +51,8 @@
                     <p>Manage your account security and active session.</p>
                 </div>
 
-                <div class="logout-card">
+                <div class="oner" >
+                    <div class="logout-card">
                     <div class="logout-icon">
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -70,6 +69,7 @@
                         <button class="btn btn-confirm" id="confirmLogout">Confirm Logout</button>
                         <button class="btn btn-cancel" id="cancelLogout">Return to Dashboard</button>
                     </div>
+                </div>
                 </div>
             </main>
 
