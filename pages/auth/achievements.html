@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Achievements | Asprasys Dash</title>
+    <style>
+        :root {
+            /* Inherited Theme Variables */
+            --bg-main: #0f172a;
+            --bg-accent: #1e293b;
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.15);
+            --secondary: #64748b;
+            --accent: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+
+            --surface: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --sidebar-width: 260px;
+            --navbar-height: 70px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-main);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(129, 140, 248, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-accent);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary-glow);
+            color: var(--primary);
+            box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            height: var(--navbar-height);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Achievements Styling */
+        .content-area {
+            padding: 2rem;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-section p {
+            color: var(--text-secondary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            display: block;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Filtering UI */
+        .filter-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--bg-accent);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--bg-main);
+            border-color: var(--primary);
+        }
+
+        /* Achievements Grid */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .achievement-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .badge-container {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            border: 3px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .achievement-card.Completed .badge-container {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .achievement-card.Locked .badge-container {
+            opacity: 0.4;
+            filter: grayscale(1);
+        }
+
+        .achievement-card.In-Progress .badge-container {
+            border-color: var(--warning);
+            border-style: dashed;
+        }
+
+        .status-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-Completed {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-In-Progress {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .status-Locked {
+            background: rgba(100, 116, 139, 0.2);
+            color: var(--secondary);
+        }
+
+        .achievement-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .completion-date {
+            margin-top: auto;
+            padding-top: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-text">Asprasys Dash</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                    <li class="nav-item"><a href="daily-goals.html" class="nav-link">Daily Goals</a></li>
+                    <li class="nav-item"><a href="achievements.html" class="nav-link active">Achievements</a></li>
+                    <li class="nav-item"><a href="announcements.html" class="nav-link">Announcements</a></li>
+                    <li class="nav-item"><a href="my-timesheets.html" class="nav-link">Timesheets</a></li>
+                    <li class="nav-item"><a href="my-courses.html" class="nav-link">My Courses</a></li>
+                    <li class="nav-item"><a href="my-projects.html" class="nav-link">My Projects</a></li>
+                    <li class="nav-item"><a href="my-interviews.html" class="nav-link">My Interviews</a></li>
+                    <li class="nav-item"><a href="my-profile.html" class="nav-link">My Profile</a></li>
+                    <li class="nav-item logout-link"><a href="#" class="nav-link">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <div class="main-wrapper">
+            <header class="navbar">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2 id="page-title">Achievements</h2>
+                </div>
+                <div class="user-profile">
+                    <span class="user-name">Alex Johnson</span>
+                    <div class="user-avatar">AJ</div>
+                </div>
+            </header>
+
+            <main class="content-area">
+                <section class="welcome-section">
+                    <h1>Your Hall of Fame</h1>
+                    <p>Track your milestones, badges, and professional growth rewards.</p>
+                </section>
+
+                <div class="stats-grid">
+                    <div class="card">
+                        <span class="stat-label">Total Achievements</span>
+                        <span class="stat-value" id="count-total">0</span>
+                    </div>
+                    <div class="card">
+                        <span class="stat-label">Completed</span>
+                        <span class="stat-value" id="count-completed" style="color: var(--success);">0</span>
+                    </div>
+                    <div class="card">
+                        <span class="stat-label">Badges Earned</span>
+                        <span class="stat-value" id="count-badges" style="color: var(--accent);">0</span>
+                    </div>
+                </div>
+
+                <div class="filter-section" id="filter-container">
+                    <button class="filter-btn active" data-filter="All">All</button>
+                    <button class="filter-btn" data-filter="Completed">Completed</button>
+                    <button class="filter-btn" data-filter="In-Progress">In Progress</button>
+                    <button class="filter-btn" data-filter="Locked">Locked</button>
+                </div>
+
+                <div class="achievements-grid" id="achievements-container">
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>&copy; 2025 Asprasys Dash Enterprise. System operational.</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const achievementsData = [
+            { title: "First Flight", desc: "Complete your first professional course.", status: "Completed", icon: "🚀", date: "Jan 15, 2025" },
+            { title: "Code Sentinel", desc: "Submit 50 bug-free pull requests.", status: "In-Progress", icon: "🛡️", date: null },
+            { title: "Project Architect", desc: "Lead a project from ideation to deployment.", status: "Locked", icon: "🏛️", date: null },
+            { title: "Night Owl", desc: "Commit code for 7 consecutive days after midnight.", status: "Completed", icon: "🦉", date: "Feb 02, 2025" },
+            { title: "Goal Crusher", desc: "Achieve 100% of your daily goals for 30 days.", status: "In-Progress", icon: "🎯", date: null },
+            { title: "Public Speaker", desc: "Conduct a technical knowledge sharing session.", status: "Locked", icon: "🎤", date: null },
+            { title: "Bug Hunter", desc: "Resolve a critical system vulnerability.", status: "Completed", icon: "🐛", date: "Feb 12, 2025" },
+            { title: "Speed Demon", desc: "Complete a timesheet in under 2 minutes.", status: "Completed", icon: "⚡", date: "Feb 20, 2025" }
+        ];
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function renderAchievements(filter = "All") {
+            const container = document.getElementById('achievements-container');
+            container.innerHTML = '';
+
+            const filteredData = filter === "All" ? achievementsData : achievementsData.filter(a => a.status === filter);
+
+            filteredData.forEach((achievement, index) => {
+                const card = document.createElement('div');
+                card.className = `card achievement-card ${achievement.status}`;
+                card.style.animation = `slideUp 0.4s ease forwards ${index * 0.05}s`;
+                card.style.opacity = '0';
+
+                card.innerHTML = `
+                <div class="status-tag status-${achievement.status}">${achievement.status.replace('-', ' ')}</div>
+                <div class="badge-container">${achievement.icon}</div>
+                <h3 class="achievement-title">${achievement.title}</h3>
+                <p class="achievement-desc">${achievement.desc}</p>
+                <p class="completion-date">${achievement.date ? 'Unlocked: ' + achievement.date : 'Not yet unlocked'}</p>
+            `;
+                container.appendChild(card);
+            });
+
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('count-total').innerText = achievementsData.length;
+            document.getElementById('count-completed').innerText = achievementsData.filter(a => a.status === 'Completed').length;
+            document.getElementById('count-badges').innerText = achievementsData.filter(a => a.status === 'Completed').length;
+        }
+
+        // Initialize filtering
+        document.getElementById('filter-container').addEventListener('click', (e) => {
+            if (e.target.classList.contains('filter-btn')) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                renderAchievements(e.target.getAttribute('data-filter'));
+            }
+        });
+
+        // Add CSS Animation dynamically
+        const style = document.createElement('style');
+        style.innerHTML = `
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    `;
+        document.head.appendChild(style);
+
+        window.onload = () => renderAchievements();
+    </script>
+
+    
+
+</body>
+
+</html>
